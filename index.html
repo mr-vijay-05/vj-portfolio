@@ -453,7 +453,7 @@
         </div>
 
         <div class="contact-form-wrap reveal delay-2">
-          <form class="contact-form" action="https://formspree.io/f/xyknbgpy" method="POST">
+          <form id="contact-form" class="contact-form" action="https://formspree.io/f/xyknbgpy" method="POST">
             <div class="form-row">
               <div class="form-group">
                 <label for="name">Your Name</label>
@@ -501,6 +501,45 @@
     </div>
   </footer>
 
+  <script id="ajaxfix">
+    const form = document.getElementById("contact-form");
+
+    if (form) {
+      form.addEventListener("submit", async function (e) {
+        e.preventDefault();
+
+        const submitBtn = document.getElementById("submitBtn");
+        const btnText = document.getElementById("btnText");
+        const originalBtnText = btnText ? btnText.textContent : "Send Message →";
+
+        if (submitBtn) submitBtn.disabled = true;
+        if (btnText) btnText.textContent = "Sending...";
+
+        try {
+          const data = new FormData(form);
+          const response = await fetch(form.action, {
+            method: form.method,
+            body: data,
+            headers: {
+              Accept: "application/json"
+            }
+          });
+
+          if (response.ok) {
+            alert("Message sent successfully!");
+            form.reset();
+          } else {
+            alert("Something went wrong. Please try again.");
+          }
+        } catch (error) {
+          alert("Network error. Please try again.");
+        } finally {
+          if (submitBtn) submitBtn.disabled = false;
+          if (btnText) btnText.textContent = originalBtnText;
+        }
+      });
+    }
+  </script>
   <script src="script.js"></script>
 </body>
 </html>
